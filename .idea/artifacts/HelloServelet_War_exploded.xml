@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="HelloServelet:War exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/HelloServelet_War_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="HelloServelet" />
+          <element id="module-output" name="HIServelet" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="HelloServelet/web/Web" />
+    </root>
+  </artifact>
+</component>

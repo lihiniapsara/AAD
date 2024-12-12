@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="ear" name="javEE">
+    <output-path>$PROJECT_DIR$/out/artifacts/javEE</output-path>
+    <root id="archive" name="javEE.ear">
+      <element id="directory" name="lib">
+        <element id="archive" name="HelloServelet.jar">
+          <element id="module-output" name="HelloServelet" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
