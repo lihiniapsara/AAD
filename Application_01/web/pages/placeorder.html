@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center">Place Order</h1>
+
+    <!-- Order Form -->
+    <div class="card p-4 mb-4">
+        <h3 class="card-title">Order Form</h3>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="orderId" class="form-label">Order ID</label>
+                <input type="text" id="orderId" class="form-control" placeholder="Enter Order ID">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="customerName" class="form-label">Customer Name</label>
+                <input type="text" id="customerName" class="form-control" placeholder="Enter Customer Name">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="orderDate" class="form-label">Order Date</label>
+                <input type="date" id="orderDate" class="form-control">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="totalAmount" class="form-label">Total Amount</label>
+                <input type="number" id="totalAmount" class="form-control" placeholder="Enter Total Amount">
+            </div>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-success" id="saveOrder">Save</button>
+            <button class="btn btn-warning" id="updateOrder">Update</button>
+            <button class="btn btn-danger" id="deleteOrder">Delete</button>
+            <button class="btn btn-secondary" id="clearOrder">Clear</button>
+        </div>
+    </div>
+
+    <!-- Order Table -->
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Order Records</h3>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Order Date</th>
+                    <th>Total Amount</th>
+                </tr>
+                </thead>
+                <tbody id="orderTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="order.js"></script>
+</body>
+</html>

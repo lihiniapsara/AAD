@@ -12,9 +12,19 @@ public class HelloServelet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter out = resp.getWriter();
-        out.println("<h1>hellooooo</h1>");
-        System.out.println("1");
+        String servletPath = req.getServletPath();
+        String contextPath = req.getContextPath();
+        String requestURI = req.getRequestURI();
+        String method = req.getMethod();
+        String pathInfo = req.getPathInfo();
+        String remoteUser = req.getRemoteUser();
+
+        System.out.println("ServletPath: " + servletPath);
+        System.out.println("ContextPath: " + contextPath);
+        System.out.println("RequestURI: " + requestURI);
+        System.out.println("Method: " + method);
+        System.out.println("PathInfo: " + pathInfo);
+        System.out.println("RemoteUser: " + remoteUser);
     }
 
     @Override
