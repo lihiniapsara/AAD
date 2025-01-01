@@ -5,60 +5,350 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Order Form</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="text-center">Place Order</h1>
+    <h2 class="text-center mb-4">Order Management</h2>
 
-    <!-- Order Form -->
-    <div class="card p-4 mb-4">
-        <h3 class="card-title">Order Form</h3>
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="orderId" class="form-label">Order ID</label>
-                <input type="text" id="orderId" class="form-control" placeholder="Enter Order ID">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="customerName" class="form-label">Customer Name</label>
-                <input type="text" id="customerName" class="form-control" placeholder="Enter Customer Name">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="orderDate" class="form-label">Order Date</label>
-                <input type="date" id="orderDate" class="form-control">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="totalAmount" class="form-label">Total Amount</label>
-                <input type="number" id="totalAmount" class="form-control" placeholder="Enter Total Amount">
-            </div>
-        </div>
-        <div class="text-end">
-            <button class="btn btn-success" id="saveOrder">Save</button>
-            <button class="btn btn-warning" id="updateOrder">Update</button>
-            <button class="btn btn-danger" id="deleteOrder">Delete</button>
-            <button class="btn btn-secondary" id="clearOrder">Clear</button>
+    <div class="mb-4">
+        <label for="orderid" class="form-label">Order ID</label>
+        <div class="col-md-4 p-0">
+            <input type="text" class="form-control" id="orderid" placeholder="Enter Order ID" required>
         </div>
     </div>
 
-    <!-- Order Table -->
-    <div class="card">
+    <!-- Customer Selection -->
+    <div class="card mb-4 shadow-sm">
         <div class="card-body">
-            <h3 class="card-title">Order Records</h3>
-            <table class="table table-bordered">
-                <thead class="table-light">
+            <h5 class="card-title">Select Customer</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <select id="selectCustomer" class="form-select" required>
+                        <option selected disabled value="">Select a Customer</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="customerName2" placeholder="Customer Name" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Selection -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Select Item</h5>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <select id="selectItem" class="form-select" required>
+                            <option value="" disabled selected>Select an Item</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="description" placeholder="Description" disabled>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <input type="number" class="form-control" id="qtyOnHand" placeholder="Qty On Hand" disabled>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <input type="number" class="form-control" id="unitPrice" placeholder="Unit Price" disabled>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <input type="number" class="form-control" id="quantity" placeholder="Enter Quantity" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex justify-content-end align-items-end">
+                    <button id="addcart" class="btn btn-primary">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Table -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Order Summary</h5>
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
                 <tr>
-                    <th>Order ID</th>
-                    <th>Customer Name</th>
-                    <th>Order Date</th>
-                    <th>Total Amount</th>
+                    <th>Customer Id</th>
+                    <th>Description</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
                 </tr>
                 </thead>
-                <tbody id="orderTableBody">
-                </tbody>
+                <tbody id="cartTableBody"></tbody>
             </table>
         </div>
     </div>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <h4>Total Amount: <span id="totalAmount">0.00</span></h4>
+        <button class="btn btn-success" id="placeOrder">Place Order</button>
+    </div>
 </div>
 
-<script src="order.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script >
+    let cartdata = [];
+    let tot = 0;
+
+    const  setcustomerid = () => {
+        $.ajax({
+            url: "http://localhost:8080/Application_01_Web_exploded/customer",
+            method: "GET",
+            success: function (response) {
+                let data = response;
+                console.log(data);
+                $("#selectCustomer").empty();
+                $("#selectCustomer").append('<option selected disabled value="">Select a Customer</option>');
+                for (let i = 0; i < data.length; i++) {
+                    let row = `<option value="${data[i].id}">${data[i].id}</option>`;
+                    $("#selectCustomer").append(row);
+                }
+            },
+            error:function (error) {
+                console.log("Error:"+error)
+            }
+        })
+
+    }
+    setcustomerid();
+    const setitemId = () => {
+        $.ajax({
+            url: "http://localhost:8080/Application_01_Web_exploded/item",
+            method: "GET",
+            success: function (response) {
+                let data = response;
+                console.log(data);
+                $("#selectItem").empty();
+                $("#selectItem").append('<option value="" disabled selected>Select an Item</option>');
+                for (let i = 0; i < data.length; i++) {
+                    let row = `<option value="${data[i].item_code}">${data[i].item_code}</option>`;
+                    $("#selectItem").append(row);
+                }
+            },
+            error: function (error) {
+                console.log("Error:" + error)
+            }
+        })
+    }
+    setitemId();
+    $("#selectCustomer").on("change",  (e) => {
+        let customerId = e.target.value;
+        console.log(customerId)
+        $.ajax({
+            url: `http://localhost:8080/Application_01_Web_exploded/customer`,
+            method: "GET",
+            success: function (response) {
+                let data = response;
+                console.log(data);
+
+                for (let i = 0; i < data.length; i++) {
+                    if(customerId == data[i].id){
+                        $("#customerName2").val(data[i].name);
+
+                    }
+                }
+            },
+            error: function (error) {
+                console.log("Error:" + error)
+            }
+        })
+
+    })
+    $("#selectItem").on("change",  (e) => {
+        let itemId = e.target.value;
+        console.log(itemId)
+        $.ajax({
+            url: `http://localhost:8080/Application_01_Web_exploded/item`,
+            method: "GET",
+            success: function (response) {
+                let data = response;
+                console.log(data);
+
+                for (let i = 0; i < data.length; i++) {
+                    if(itemId == data[i].item_code){
+                        $("#description").val(data[i].description);
+                        $("#qtyOnHand").val(data[i].qty);
+                        $("#unitPrice").val(data[i].unit_price);
+                    }
+                }
+            },
+            error: function (error) {
+                console.log("Error:" + error)
+            }
+        })
+
+    })
+
+    $("#addcart").on("click", (e) => {
+        console.log("addcart button clicked");
+
+        let customerId = $("#selectCustomer").val();
+        let item_code = $("#selectItem").val();
+        let description = $("#description").val();
+        let unit_price = $("#unitPrice").val();
+        let quantity = $("#quantity").val();
+        let total = unit_price * quantity;
+
+        tot = tot + total;
+
+        console.log("customerId", customerId);
+        console.log("item_code", item_code);
+        console.log("description", description);
+        console.log("unit_price", unit_price);
+        console.log("quantity", quantity);
+        console.log("total", total);
+
+        let cartobj = {
+            "customerId": customerId,
+            "item_code": item_code,
+            "description": description,
+            "unit_price": unit_price,
+            "quantity": quantity,
+            "total": total
+        }
+
+        cartdata.push(cartobj);
+        console.log(cartdata);
+
+        loadCartData();
+    })
+
+    function loadCartData() {
+        $("#cartTableBody").empty();
+        for (let i = 0; i < cartdata.length; i++) {
+            let row = `
+            <tr>
+                <td>${cartdata[i].customerId}</td>
+                <td>${cartdata[i].description}</td>
+                <td>${cartdata[i].unit_price}</td>
+                <td>${cartdata[i].quantity}</td>
+                <td>${cartdata[i].total}</td>
+            </tr>
+            `;
+            $("#cartTableBody").append(row);
+        }
+
+    }
+
+    $("#placeOrder").on("click", (e) => {
+        console.log("placeorder button clicked");
+        let orderid = $("#orderid").val();
+        let customerid = $("#selectCustomer").val();
+        let itemcode = $("#selectItem").val();
+
+        console.log(orderid , customerid , itemcode)
+
+        $.ajax({
+            url: `http://localhost:8080/Application_01_Web_exploded/order`,
+            method: "POST",
+            data: {
+                "orderid": orderid,
+                "customerid": customerid,
+                "itemcode": itemcode,
+                "total": tot
+            },
+            success: function (response) {
+                console.log(response);
+                orderdetails(orderid)
+            },
+            error: function (error) {
+                console.log("Error:" + error)
+            }
+        })
+    })
+
+    function orderdetails(orderid) {
+        let index = 0;
+
+        cartdata.forEach((element) => {
+            console.log(cartdata.length)
+            index++;
+            console.log(element.item_code,orderid)
+            $.ajax({
+                url: `http://localhost:8080/Application_01_Web_exploded/orderDetails`,
+                method: "POST",
+                data: {
+                    "orderid": orderid,
+                    "itemcode": element.item_code
+
+                },
+                success: function (response) {
+                    console.log(response);
+                    updateItems(element.item_code, element.quantity,index);
+                },
+                error: function (error) {
+                    console.log("Error:" + error)
+                }
+            })
+        })
+    }
+
+    function updateItems(itemcode, quantity,index) {
+        console.log(index)
+        $.ajax({
+            url: `http://localhost:8080/Application_01_Web_exploded/orderDetails`,
+            method: "PUT",
+            contentType: "application/json",
+            data:JSON.stringify({
+                itemCode: itemcode,
+                qty: quantity
+            }),
+            success: function (response) {
+                console.log(response);
+                if(index == cartdata.length){
+                    alert("Order Placed Successfully")
+                    cartdata.splice(0,cartdata.length);
+                    tot = 0;
+                    setOrderId();
+                    clearForm();
+                }
+            },
+            error: function (error) {
+                console.log("Error:" + error)
+            }
+        })
+
+    }
+    const setOrderId = () => {
+        console.log("Set OrderId");
+        $.ajax({
+            url: "http://localhost:8080/Application_01_Web_exploded/order",
+            method: "GET",
+            success: function (response) {
+                let data = response;
+                console.log(data+1);
+                $("#orderid").val(data + 1);
+            },
+            error: function (error) {
+                console.log("Error:" + error)
+            }
+        })
+    }
+
+    setOrderId();
+
+    const clearForm = () => {
+        $("#selectCustomer").val("");
+        $("#customerName2").val()
+        $("#selectItem").val("");
+        $("#description").val("");
+        $("#qtyOnHand").val("");
+        $("#unitPrice").val("");
+        $("#quantity").val("");
+    }
+
+</script>
 </body>
 </html>

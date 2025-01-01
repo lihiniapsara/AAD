@@ -42,8 +42,12 @@ public class CustomerServlet extends HttpServlet {
                 allcustomers.add(customer);
 
             }
-
+           // resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(allcustomers.build().toString());
+            resp.addHeader("IP ADDRESS","244.178.44.111");
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
